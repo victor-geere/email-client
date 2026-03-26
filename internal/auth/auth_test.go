@@ -39,7 +39,7 @@ func TestTokenSource_ReturnsCachedToken(t *testing.T) {
 			ExpiresAt:   time.Now().Add(1 * time.Hour),
 		},
 	}
-	ts := NewTokenSource("client-id", "tenant-id", cache)
+	ts := NewTokenSource("client-id", "tenant-id", "", cache)
 	token, err := ts.Token(context.Background())
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -72,7 +72,7 @@ func TestTokenSource_RefreshesExpiredToken(t *testing.T) {
 			ExpiresAt:    time.Now().Add(-1 * time.Hour),
 		},
 	}
-	ts := NewTokenSource("client-id", "tenant-id", cache)
+	ts := NewTokenSource("client-id", "tenant-id", "", cache)
 	token, err := ts.Token(context.Background())
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -127,7 +127,7 @@ func TestTokenSource_DeviceCodeFlowOnNoCache(t *testing.T) {
 	}()
 
 	cache := &memoryCache{}
-	ts := NewTokenSource("client-id", "tenant-id", cache)
+	ts := NewTokenSource("client-id", "tenant-id", "", cache)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -154,7 +154,7 @@ func TestRefreshAccessToken_Failure(t *testing.T) {
 	tokenURLFunc = func(tenantID string) string { return server.URL }
 	defer func() { tokenURLFunc = origTokenURL }()
 
-	_, err := RefreshAccessToken(context.Background(), server.Client(), "client-id", "tenant-id", "bad-refresh")
+	_, err := RefreshAccessToken(context.Background(), server.Client(), "client-id", "tenant-id", "", "bad-refresh")
 	if err == nil {
 		t.Fatal("expected error on refresh failure")
 	}
