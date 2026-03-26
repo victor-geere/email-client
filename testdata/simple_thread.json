@@ -1,0 +1,40 @@
+{
+  "value": [
+    {
+      "id": "msg-001",
+      "conversationId": "conv-simple-001",
+      "subject": "Q4 Budget Review",
+      "receivedDateTime": "2025-01-14T10:00:00Z",
+      "from": {
+        "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" }
+      },
+      "toRecipients": [
+        { "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": {
+        "contentType": "text",
+        "content": "Hi Bob,\n\nPlease review the Q4 budget numbers.\n\nThanks,\nAlice"
+      },
+      "bodyPreview": "Hi Bob, Please review the Q4 budget numbers."
+    },
+    {
+      "id": "msg-002",
+      "conversationId": "conv-simple-001",
+      "subject": "Re: Q4 Budget Review",
+      "receivedDateTime": "2025-01-14T14:05:00Z",
+      "from": {
+        "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" }
+      },
+      "toRecipients": [
+        { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": {
+        "contentType": "text",
+        "content": "The numbers look good to me.\n\n> Hi Bob,\n> \n> Please review the Q4 budget numbers.\n> \n> Thanks,\n> Alice"
+      },
+      "bodyPreview": "The numbers look good to me."
+    }
+  ]
+}

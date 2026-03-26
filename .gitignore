@@ -1,0 +1,19 @@
+# Go binary
+email-linearize
+
+# Output directory
+output/
+
+# Build state
+.build-state.json
+
+# Token cache files
+*.token
+.token-cache
+.email-linearize/
+
+# Go
+vendor/
+
+# macOS
+.DS_Store

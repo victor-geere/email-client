@@ -1,0 +1,36 @@
+{
+  "value": [
+    {
+      "id": "html-001",
+      "conversationId": "conv-html-001",
+      "subject": "Design Feedback",
+      "receivedDateTime": "2025-01-15T09:00:00Z",
+      "from": { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } },
+      "toRecipients": [
+        { "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": {
+        "contentType": "html",
+        "content": "<html><body><p>Hi Bob,</p><p>Please check the new design mockups.</p><p>Thanks,<br>Alice</p></body></html>"
+      },
+      "bodyPreview": "Hi Bob, Please check the new design mockups."
+    },
+    {
+      "id": "html-002",
+      "conversationId": "conv-html-001",
+      "subject": "Re: Design Feedback",
+      "receivedDateTime": "2025-01-15T11:00:00Z",
+      "from": { "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" } },
+      "toRecipients": [
+        { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": {
+        "contentType": "html",
+        "content": "<html><body><p>Looks great! Just one suggestion on the colors.</p><blockquote><p>Hi Bob,</p><p>Please check the new design mockups.</p><p>Thanks,<br>Alice</p></blockquote></body></html>"
+      },
+      "bodyPreview": "Looks great! Just one suggestion on the colors."
+    }
+  ]
+}

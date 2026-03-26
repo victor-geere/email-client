@@ -1,0 +1,30 @@
+{
+  "value": [
+    {
+      "id": "edge-001",
+      "conversationId": "conv-edge-001",
+      "subject": "",
+      "receivedDateTime": "2025-01-18T10:00:00Z",
+      "from": { "emailAddress": { "name": "Unknown Sender", "address": "noreply@example.com" } },
+      "toRecipients": [
+        { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": { "contentType": "text", "content": "" },
+      "bodyPreview": ""
+    },
+    {
+      "id": "edge-002",
+      "conversationId": "conv-edge-002",
+      "subject": "Single Message Thread",
+      "receivedDateTime": "2025-01-18T11:00:00Z",
+      "from": { "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" } },
+      "toRecipients": [
+        { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": { "contentType": "text", "content": "This is a standalone message, not part of any thread." },
+      "bodyPreview": "This is a standalone message."
+    }
+  ]
+}

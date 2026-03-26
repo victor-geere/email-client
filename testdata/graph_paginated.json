@@ -1,0 +1,27 @@
+{
+  "@odata.nextLink": "https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages?$skip=2",
+  "value": [
+    {
+      "id": "page1-001",
+      "conversationId": "conv-page-001",
+      "subject": "First Message",
+      "receivedDateTime": "2025-01-14T10:00:00Z",
+      "from": { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } },
+      "toRecipients": [{ "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" } }],
+      "ccRecipients": [],
+      "body": { "contentType": "text", "content": "Page 1 message 1" },
+      "bodyPreview": "Page 1 message 1"
+    },
+    {
+      "id": "page1-002",
+      "conversationId": "conv-page-001",
+      "subject": "Second Message",
+      "receivedDateTime": "2025-01-14T11:00:00Z",
+      "from": { "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" } },
+      "toRecipients": [{ "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } }],
+      "ccRecipients": [],
+      "body": { "contentType": "text", "content": "Page 1 message 2" },
+      "bodyPreview": "Page 1 message 2"
+    }
+  ]
+}

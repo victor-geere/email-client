@@ -1,0 +1,74 @@
+{
+  "value": [
+    {
+      "id": "deep-001",
+      "conversationId": "conv-deep-001",
+      "subject": "Project Planning",
+      "receivedDateTime": "2025-01-10T09:00:00Z",
+      "from": { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } },
+      "toRecipients": [
+        { "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" } },
+        { "emailAddress": { "name": "Carol Davis", "address": "carol@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": { "contentType": "text", "content": "Team,\n\nLet's plan the project timeline.\n\nAlice" },
+      "bodyPreview": "Team, Let's plan the project timeline."
+    },
+    {
+      "id": "deep-002",
+      "conversationId": "conv-deep-001",
+      "subject": "Re: Project Planning",
+      "receivedDateTime": "2025-01-10T10:30:00Z",
+      "from": { "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" } },
+      "toRecipients": [
+        { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } },
+        { "emailAddress": { "name": "Carol Davis", "address": "carol@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": { "contentType": "text", "content": "I suggest we start with the backend.\n\n> Team,\n> \n> Let's plan the project timeline.\n> \n> Alice" },
+      "bodyPreview": "I suggest we start with the backend."
+    },
+    {
+      "id": "deep-003",
+      "conversationId": "conv-deep-001",
+      "subject": "Re: Project Planning",
+      "receivedDateTime": "2025-01-10T11:15:00Z",
+      "from": { "emailAddress": { "name": "Carol Davis", "address": "carol@example.com" } },
+      "toRecipients": [
+        { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } },
+        { "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": { "contentType": "text", "content": "Agreed. Frontend can follow.\n\n> I suggest we start with the backend.\n>\n> > Team,\n> > \n> > Let's plan the project timeline." },
+      "bodyPreview": "Agreed. Frontend can follow."
+    },
+    {
+      "id": "deep-004",
+      "conversationId": "conv-deep-001",
+      "subject": "Re: Project Planning",
+      "receivedDateTime": "2025-01-10T14:00:00Z",
+      "from": { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } },
+      "toRecipients": [
+        { "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" } },
+        { "emailAddress": { "name": "Carol Davis", "address": "carol@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": { "contentType": "text", "content": "Great plan. Let's set milestones by Friday.\n\n> Agreed. Frontend can follow.\n>\n> > I suggest we start with the backend." },
+      "bodyPreview": "Great plan. Let's set milestones by Friday."
+    },
+    {
+      "id": "deep-005",
+      "conversationId": "conv-deep-001",
+      "subject": "Re: Project Planning",
+      "receivedDateTime": "2025-01-10T16:00:00Z",
+      "from": { "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" } },
+      "toRecipients": [
+        { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } },
+        { "emailAddress": { "name": "Carol Davis", "address": "carol@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": { "contentType": "text", "content": "Friday works for me.\n\n> Great plan. Let's set milestones by Friday." },
+      "bodyPreview": "Friday works for me."
+    }
+  ]
+}

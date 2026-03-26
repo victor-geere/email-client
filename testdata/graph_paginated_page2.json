@@ -1,0 +1,15 @@
+{
+  "value": [
+    {
+      "id": "page2-001",
+      "conversationId": "conv-page-001",
+      "subject": "Third Message",
+      "receivedDateTime": "2025-01-14T12:00:00Z",
+      "from": { "emailAddress": { "name": "Carol Davis", "address": "carol@example.com" } },
+      "toRecipients": [{ "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } }],
+      "ccRecipients": [],
+      "body": { "contentType": "text", "content": "Page 2 message 1" },
+      "bodyPreview": "Page 2 message 1"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "value": [
+    {
+      "id": "mix-001",
+      "conversationId": "conv-mix-001",
+      "subject": "API Changes",
+      "receivedDateTime": "2025-01-17T10:00:00Z",
+      "from": { "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" } },
+      "toRecipients": [
+        { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": { "contentType": "text", "content": "I've updated the API endpoints. Please review." },
+      "bodyPreview": "I've updated the API endpoints."
+    },
+    {
+      "id": "mix-002",
+      "conversationId": "conv-mix-001",
+      "subject": "Re: API Changes",
+      "receivedDateTime": "2025-01-17T11:30:00Z",
+      "from": { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } },
+      "toRecipients": [
+        { "emailAddress": { "name": "Bob Chen", "address": "bob@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": {
+        "contentType": "html",
+        "content": "<html><body><p>Reviewed. The auth endpoint needs a fix.</p><blockquote><p>I've updated the API endpoints. Please review.</p></blockquote></body></html>"
+      },
+      "bodyPreview": "Reviewed. The auth endpoint needs a fix."
+    }
+  ]
+}

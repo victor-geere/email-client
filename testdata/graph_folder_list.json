@@ -1,0 +1,7 @@
+{
+  "value": [
+    { "id": "AAMkAG-inbox", "displayName": "Inbox", "parentFolderId": "root", "childFolderCount": 0, "unreadItemCount": 5, "totalItemCount": 120 },
+    { "id": "AAMkAG-sent", "displayName": "Sent Items", "parentFolderId": "root", "childFolderCount": 0, "unreadItemCount": 0, "totalItemCount": 85 },
+    { "id": "AAMkAG-drafts", "displayName": "Drafts", "parentFolderId": "root", "childFolderCount": 0, "unreadItemCount": 0, "totalItemCount": 3 }
+  ]
+}

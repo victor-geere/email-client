@@ -1,0 +1,30 @@
+{
+  "value": [
+    {
+      "id": "pt-001",
+      "conversationId": "conv-pt-001",
+      "subject": "Meeting Notes",
+      "receivedDateTime": "2025-01-16T08:00:00Z",
+      "from": { "emailAddress": { "name": "Carol Davis", "address": "carol@example.com" } },
+      "toRecipients": [
+        { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": { "contentType": "text", "content": "Here are the meeting notes from today:\n\n1. Budget approved\n2. Timeline confirmed\n3. Next meeting Jan 20" },
+      "bodyPreview": "Here are the meeting notes from today:"
+    },
+    {
+      "id": "pt-002",
+      "conversationId": "conv-pt-001",
+      "subject": "Re: Meeting Notes",
+      "receivedDateTime": "2025-01-16T09:30:00Z",
+      "from": { "emailAddress": { "name": "Alice Wang", "address": "alice@example.com" } },
+      "toRecipients": [
+        { "emailAddress": { "name": "Carol Davis", "address": "carol@example.com" } }
+      ],
+      "ccRecipients": [],
+      "body": { "contentType": "text", "content": "Thanks Carol! One correction:\n\n> Here are the meeting notes from today:\n> \n> 1. Budget approved\n> 2. Timeline confirmed\n> 3. Next meeting Jan 20\n\nThe next meeting is actually Jan 21." },
+      "bodyPreview": "Thanks Carol! One correction:"
+    }
+  ]
+}
