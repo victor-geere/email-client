@@ -9,19 +9,21 @@ import (
 
 // TokenSource provides valid access tokens, handling caching and refresh.
 type TokenSource struct {
-	ClientID   string
-	TenantID   string
-	Cache      TokenCache
-	HTTPClient *http.Client
+	ClientID     string
+	TenantID     string
+	ClientSecret string
+	Cache        TokenCache
+	HTTPClient   *http.Client
 }
 
 // NewTokenSource creates a TokenSource with the given configuration.
-func NewTokenSource(clientID, tenantID string, cache TokenCache) *TokenSource {
+func NewTokenSource(clientID, tenantID, clientSecret string, cache TokenCache) *TokenSource {
 	return &TokenSource{
-		ClientID:   clientID,
-		TenantID:   tenantID,
-		Cache:      cache,
-		HTTPClient: http.DefaultClient,
+		ClientID:     clientID,
+		TenantID:     tenantID,
+		ClientSecret: clientSecret,
+		Cache:        cache,
+		HTTPClient:   http.DefaultClient,
 	}
 }
 
@@ -35,7 +37,7 @@ func (ts *TokenSource) Token(ctx context.Context) (string, error) {
 
 	// Try refresh if we have a refresh token
 	if err == nil && cached.RefreshToken != "" {
-		refreshed, refreshErr := RefreshAccessToken(ctx, ts.HTTPClient, ts.ClientID, ts.TenantID, cached.RefreshToken)
+		refreshed, refreshErr := RefreshAccessToken(ctx, ts.HTTPClient, ts.ClientID, ts.TenantID, ts.ClientSecret, cached.RefreshToken)
 		if refreshErr == nil {
 			if saveErr := ts.Cache.Save(*refreshed); saveErr != nil {
 				return "", fmt.Errorf("save refreshed token: %w", saveErr)
@@ -53,7 +55,7 @@ func (ts *TokenSource) Token(ctx context.Context) (string, error) {
 
 	fmt.Fprintf(os.Stderr, "\n%s\n\n", dcResp.Message)
 
-	token, err := PollForToken(ctx, ts.HTTPClient, ts.ClientID, ts.TenantID, dcResp.DeviceCode, dcResp.Interval)
+	token, err := PollForToken(ctx, ts.HTTPClient, ts.ClientID, ts.TenantID, ts.ClientSecret, dcResp.DeviceCode, dcResp.Interval)
 	if err != nil {
 		return "", fmt.Errorf("poll for token: %w", err)
 	}

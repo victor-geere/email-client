@@ -12,9 +12,10 @@ import (
 )
 
 const (
-	envClientID = "EMAIL_LINEAR_CLIENT_ID"
-	envTenantID = "EMAIL_LINEAR_TENANT_ID"
-	scopes      = "Mail.Read offline_access"
+	envClientID     = "EMAIL_LINEAR_CLIENT_ID"
+	envTenantID     = "EMAIL_LINEAR_TENANT_ID"
+	envClientSecret = "EMAIL_LINEAR_CLIENT_SECRET_VALUE"
+	scopes          = "Mail.Read offline_access"
 )
 
 // TokenResponse holds tokens returned by the OAuth token endpoint.
@@ -40,17 +41,18 @@ type DeviceCodeResponse struct {
 	Message         string `json:"message"`
 }
 
-// EnvConfig reads client ID and tenant ID from environment variables.
-func EnvConfig() (clientID, tenantID string, err error) {
+// EnvConfig reads client ID, tenant ID, and optional client secret from environment variables.
+func EnvConfig() (clientID, tenantID, clientSecret string, err error) {
 	clientID = os.Getenv(envClientID)
 	if clientID == "" {
-		return "", "", fmt.Errorf("environment variable %s is not set", envClientID)
+		return "", "", "", fmt.Errorf("environment variable %s is not set", envClientID)
 	}
 	tenantID = os.Getenv(envTenantID)
 	if tenantID == "" {
 		tenantID = "common"
 	}
-	return clientID, tenantID, nil
+	clientSecret = os.Getenv(envClientSecret)
+	return clientID, tenantID, clientSecret, nil
 }
 
 // URL functions are variables so tests can override them.
@@ -92,7 +94,7 @@ func RequestDeviceCode(ctx context.Context, httpClient *http.Client, clientID, t
 }
 
 // PollForToken polls the token endpoint until the user approves or the context is cancelled.
-func PollForToken(ctx context.Context, httpClient *http.Client, clientID, tenantID, deviceCode string, interval int) (*TokenResponse, error) {
+func PollForToken(ctx context.Context, httpClient *http.Client, clientID, tenantID, clientSecret, deviceCode string, interval int) (*TokenResponse, error) {
 	if interval < 1 {
 		interval = 5
 	}
@@ -103,6 +105,9 @@ func PollForToken(ctx context.Context, httpClient *http.Client, clientID, tenant
 		"grant_type":  {"urn:ietf:params:oauth:grant-type:device_code"},
 		"client_id":   {clientID},
 		"device_code": {deviceCode},
+	}
+	if clientSecret != "" {
+		data.Set("client_secret", clientSecret)
 	}
 
 	for {
@@ -162,12 +167,15 @@ func tryTokenRequest(ctx context.Context, httpClient *http.Client, tenantID stri
 }
 
 // RefreshAccessToken uses a refresh token to obtain a new access token.
-func RefreshAccessToken(ctx context.Context, httpClient *http.Client, clientID, tenantID, refreshToken string) (*TokenResponse, error) {
+func RefreshAccessToken(ctx context.Context, httpClient *http.Client, clientID, tenantID, clientSecret, refreshToken string) (*TokenResponse, error) {
 	data := url.Values{
 		"grant_type":    {"refresh_token"},
 		"client_id":     {clientID},
 		"refresh_token": {refreshToken},
 		"scope":         {scopes},
+	}
+	if clientSecret != "" {
+		data.Set("client_secret", clientSecret)
 	}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, tokenURLFunc(tenantID), strings.NewReader(data.Encode()))
