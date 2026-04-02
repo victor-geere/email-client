@@ -28,7 +28,7 @@ func NewTokenSource(clientID, tenantID, clientSecret string, cache TokenCache) *
 }
 
 // Token returns a valid access token. It loads from cache, refreshes if
-// expired, or initiates a device code flow as a last resort.
+// expired, or initiates a device code flow for new sign-in.
 func (ts *TokenSource) Token(ctx context.Context) (string, error) {
 	cached, err := ts.Cache.Load()
 	if err == nil && !cached.IsExpired() {
@@ -44,21 +44,24 @@ func (ts *TokenSource) Token(ctx context.Context) (string, error) {
 			}
 			return refreshed.AccessToken, nil
 		}
-		// Refresh failed — fall through to device code flow
+		// Refresh failed — inform user and fall through to device code flow
+		fmt.Fprintf(os.Stderr, "Token refresh failed: %v\nStarting new sign-in...\n", refreshErr)
 	}
 
 	// Device code flow
-	dcResp, err := RequestDeviceCode(ctx, ts.HTTPClient, ts.ClientID, ts.TenantID)
-	if err != nil {
-		return "", fmt.Errorf("request device code: %w", err)
+	dcResp, dcErr := RequestDeviceCode(ctx, ts.HTTPClient, ts.ClientID, ts.TenantID)
+	if dcErr != nil {
+		return "", fmt.Errorf("request device code: %w", dcErr)
 	}
 
-	fmt.Fprintf(os.Stderr, "\n%s\n\n", dcResp.Message)
+	promptDeviceCode(dcResp)
 
+	fmt.Fprintf(os.Stderr, "Waiting for sign-in (including any MFA steps)...\n")
 	token, err := PollForToken(ctx, ts.HTTPClient, ts.ClientID, ts.TenantID, ts.ClientSecret, dcResp.DeviceCode, dcResp.Interval)
 	if err != nil {
 		return "", fmt.Errorf("poll for token: %w", err)
 	}
+
 	if saveErr := ts.Cache.Save(*token); saveErr != nil {
 		return "", fmt.Errorf("save new token: %w", saveErr)
 	}

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # Authenticate with Microsoft 365 using the device code flow.
+# A code is displayed in the terminal — go to https://microsoft.com/devicelogin
+# and enter it. MFA prompts (if enabled) are handled during that browser session.
 # Requires EMAIL_LINEAR_CLIENT_ID to be set.
 set -euo pipefail
 
@@ -24,5 +26,6 @@ if [[ ! -x "$BINARY" ]]; then
   ./scripts/build.sh
 fi
 
-echo "Starting device code authentication..."
+# The binary will display a user code and verification URL.
+# Sign in at the URL, enter the code, and complete any MFA prompts.
 "$BINARY" --auth-only

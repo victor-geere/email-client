@@ -150,7 +150,8 @@ func tryTokenRequest(ctx context.Context, httpClient *http.Client, tenantID stri
 	}
 
 	var errResp struct {
-		Error string `json:"error"`
+		Error            string `json:"error"`
+		ErrorDescription string `json:"error_description"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&errResp); err != nil {
 		return nil, false, fmt.Errorf("decode error response: %w", err)
@@ -162,6 +163,9 @@ func tryTokenRequest(ctx context.Context, httpClient *http.Client, tenantID stri
 	case "expired_token":
 		return nil, false, fmt.Errorf("device code expired, please restart authentication")
 	default:
+		if errResp.ErrorDescription != "" {
+			return nil, false, fmt.Errorf("token request error: %s — %s", errResp.Error, errResp.ErrorDescription)
+		}
 		return nil, false, fmt.Errorf("token request error: %s", errResp.Error)
 	}
 }
@@ -191,6 +195,13 @@ func RefreshAccessToken(ctx context.Context, httpClient *http.Client, clientID, 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
+		var errResp struct {
+			Error            string `json:"error"`
+			ErrorDescription string `json:"error_description"`
+		}
+		if decodeErr := json.NewDecoder(resp.Body).Decode(&errResp); decodeErr == nil && errResp.ErrorDescription != "" {
+			return nil, fmt.Errorf("token refresh failed: %s — %s", errResp.Error, errResp.ErrorDescription)
+		}
 		return nil, fmt.Errorf("token refresh failed (status %d), please re-authenticate with --auth-only", resp.StatusCode)
 	}
 
