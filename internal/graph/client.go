@@ -2,6 +2,7 @@ package graph
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,12 +15,13 @@ import (
 
 const defaultBaseURL = "https://graph.microsoft.com/v1.0"
 
-const selectFields = "id,conversationId,subject,from,toRecipients,ccRecipients,receivedDateTime,body,bodyPreview"
+const selectFields = "id,conversationId,subject,from,toRecipients,ccRecipients,receivedDateTime,body,bodyPreview,hasAttachments"
 
 // FetchOptions controls message fetching behaviour.
 type FetchOptions struct {
 	Top            int
 	ConversationID string
+	Since          string // ISO 8601 datetime filter: only messages received after this time
 }
 
 // Client communicates with the Microsoft Graph API.
@@ -61,7 +63,20 @@ type graphMessage struct {
 		ContentType string `json:"contentType"`
 		Content     string `json:"content"`
 	} `json:"body"`
-	BodyPreview string `json:"bodyPreview"`
+	BodyPreview    string `json:"bodyPreview"`
+	HasAttachments bool   `json:"hasAttachments"`
+}
+
+type graphAttachment struct {
+	ODataType    string `json:"@odata.type"`
+	Name         string `json:"name"`
+	ContentType  string `json:"contentType"`
+	ContentBytes string `json:"contentBytes"`
+	IsInline     bool   `json:"isInline"`
+}
+
+type attachmentsResponse struct {
+	Value []graphAttachment `json:"value"`
 }
 
 type messagesResponse struct {
@@ -82,6 +97,7 @@ func toDomainMessage(gm graphMessage) domain.Message {
 		ID:             gm.ID,
 		ConversationID: gm.ConversationID,
 		Subject:        gm.Subject,
+		HasAttachments: gm.HasAttachments,
 		From: domain.EmailAddress{
 			Name:    gm.From.EmailAddress.Name,
 			Address: gm.From.EmailAddress.Address,
@@ -170,8 +186,16 @@ func (c *Client) FetchMessages(ctx context.Context, folderID string, opts FetchO
 		top = 50
 	}
 	query.Set("$top", fmt.Sprintf("%d", top))
+
+	var filters []string
 	if opts.ConversationID != "" {
-		query.Set("$filter", fmt.Sprintf("conversationId eq '%s'", opts.ConversationID))
+		filters = append(filters, fmt.Sprintf("conversationId eq '%s'", opts.ConversationID))
+	}
+	if opts.Since != "" {
+		filters = append(filters, fmt.Sprintf("receivedDateTime ge %s", opts.Since))
+	}
+	if len(filters) > 0 {
+		query.Set("$filter", strings.Join(filters, " and "))
 	}
 
 	firstURL := c.BaseURL + fmt.Sprintf("/me/mailFolders/%s/messages", folderID) + "?" + query.Encode()
@@ -219,4 +243,52 @@ func (c *Client) FetchThreadMessages(ctx context.Context, conversationID string)
 	return c.FetchMessages(ctx, "inbox", FetchOptions{
 		ConversationID: conversationID,
 	})
+}
+
+// FetchAttachments retrieves file attachments for a message, skipping inline attachments.
+func (c *Client) FetchAttachments(ctx context.Context, messageID string) ([]domain.Attachment, error) {
+	fullURL := c.BaseURL + fmt.Sprintf("/me/messages/%s/attachments", url.PathEscape(messageID))
+	resp, err := c.doAuthRequest(ctx, fullURL)
+	if err != nil {
+		return nil, fmt.Errorf("fetch attachments: %w", err)
+	}
+
+	resp, err = handleErrors(ctx, resp, func() (*http.Response, error) {
+		return c.doAuthRequest(ctx, fullURL)
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read attachments response: %w", err)
+	}
+
+	var parsed attachmentsResponse
+	if err := json.Unmarshal(body, &parsed); err != nil {
+		return nil, fmt.Errorf("decode attachments response: %w", err)
+	}
+
+	var attachments []domain.Attachment
+	for _, ga := range parsed.Value {
+		if ga.IsInline {
+			continue
+		}
+		if ga.ODataType != "#microsoft.graph.fileAttachment" {
+			continue
+		}
+		content, err := base64.StdEncoding.DecodeString(ga.ContentBytes)
+		if err != nil {
+			return nil, fmt.Errorf("decode attachment %q: %w", ga.Name, err)
+		}
+		attachments = append(attachments, domain.Attachment{
+			Name:        ga.Name,
+			ContentType: ga.ContentType,
+			Content:     content,
+		})
+	}
+
+	return attachments, nil
 }

@@ -10,5 +10,6 @@ require (
 require (
 	github.com/danieljoos/wincred v1.2.3 // indirect
 	github.com/godbus/dbus/v5 v5.2.2 // indirect
+	github.com/yuin/goldmark v1.8.2 // indirect
 	golang.org/x/sys v0.42.0 // indirect
 )

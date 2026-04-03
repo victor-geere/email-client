@@ -15,6 +15,13 @@ type Body struct {
 	Content     string `json:"content"`
 }
 
+// Attachment represents a file attachment on an email message.
+type Attachment struct {
+	Name        string
+	ContentType string
+	Content     []byte
+}
+
 // Message represents a single email message as retrieved from Microsoft Graph.
 type Message struct {
 	ID               string         `json:"id"`
@@ -26,6 +33,8 @@ type Message struct {
 	ReceivedDateTime time.Time      `json:"receivedDateTime"`
 	Body             Body           `json:"body"`
 	BodyPreview      string         `json:"bodyPreview"`
+	HasAttachments   bool           `json:"hasAttachments"`
+	Attachments      []Attachment   `json:"-"`
 }
 
 // Thread represents a group of messages sharing a conversation ID.
