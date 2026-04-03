@@ -188,3 +188,49 @@ func min(a, b int) int {
 	}
 	return b
 }
+
+func TestFetchAttachments_ReturnsFileAttachments(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"value": []map[string]interface{}{
+				{
+					"@odata.type":  "#microsoft.graph.fileAttachment",
+					"name":         "report.pdf",
+					"contentType":  "application/pdf",
+					"contentBytes": "aGVsbG8=", // base64("hello")
+					"isInline":     false,
+				},
+				{
+					"@odata.type":  "#microsoft.graph.fileAttachment",
+					"name":         "logo.png",
+					"contentType":  "image/png",
+					"contentBytes": "aW1n", // base64("img")
+					"isInline":     true,   // inline — should be skipped
+				},
+				{
+					"@odata.type": "#microsoft.graph.itemAttachment",
+					"name":        "nested.eml",
+				},
+			},
+		})
+	}))
+	defer server.Close()
+
+	client := NewClient(server.URL, staticToken)
+	client.HTTPClient = server.Client()
+
+	attachments, err := client.FetchAttachments(context.Background(), "msg-1")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(attachments) != 1 {
+		t.Fatalf("expected 1 attachment, got %d", len(attachments))
+	}
+	if attachments[0].Name != "report.pdf" {
+		t.Errorf("expected name 'report.pdf', got %q", attachments[0].Name)
+	}
+	if string(attachments[0].Content) != "hello" {
+		t.Errorf("expected content 'hello', got %q", string(attachments[0].Content))
+	}
+}

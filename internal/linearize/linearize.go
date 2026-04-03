@@ -4,12 +4,16 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/victor/email-linearize/internal/domain"
 	"github.com/victor/email-linearize/internal/quote"
 )
 
-var multiBlankLineRe = regexp.MustCompile(`\n{3,}`)
+var (
+	multiBlankLineRe = regexp.MustCompile(`\n{3,}`)
+	sast             = time.FixedZone("SAST", 2*60*60)
+)
 
 // Linearize processes a thread by detecting quotes and replacing them with references.
 func Linearize(thread domain.Thread, annotated []domain.AnnotatedMessage) domain.LinearizedThread {
@@ -64,9 +68,9 @@ func formatReference(region domain.QuoteRegion, messages []domain.AnnotatedMessa
 			if len(firstName) > 0 {
 				name = firstName[0]
 			}
-			date := msg.ReceivedDateTime.Format("02 Jan")
-			return fmt.Sprintf("[→ see msg #%d from %s, %s]", ordinal, name, date)
+			date := msg.ReceivedDateTime.In(sast).Format("02 Jan")
+			return fmt.Sprintf("[→ quoted text omitted. see message #%d from %s, %s]", ordinal, name, date)
 		}
 	}
-	return fmt.Sprintf("[→ see msg #%d]", ordinal)
+	return fmt.Sprintf("[→ quoted text omitted. see message #%d]", ordinal)
 }

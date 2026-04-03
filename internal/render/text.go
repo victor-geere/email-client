@@ -8,10 +8,10 @@ import (
 )
 
 // RenderText produces a plain-text rendering of a linearized thread.
-func RenderText(thread domain.LinearizedThread) string {
+func RenderText(thread domain.LinearizedThread, attachDir string) string {
 	var sb strings.Builder
 
-	sb.WriteString(fmt.Sprintf("Thread: %s\n", thread.Subject))
+	sb.WriteString(fmt.Sprintf("%s\n", thread.Subject))
 	sb.WriteString("============================================================\n\n")
 
 	for _, msg := range thread.Messages {
@@ -25,8 +25,18 @@ func RenderText(thread domain.LinearizedThread) string {
 			sb.WriteString(fmt.Sprintf("Cc: %s\n", formatRecipientsText(msg.CcRecipients)))
 		}
 
-		sb.WriteString(fmt.Sprintf("Date: %s\n", msg.ReceivedDateTime.UTC().Format("2006-01-02 15:04 UTC")))
+		sb.WriteString(fmt.Sprintf("Date: %s\n", msg.ReceivedDateTime.In(SAST).Format("2006-01-02 15:04 SAST")))
 		sb.WriteString(fmt.Sprintf("Subject: %s\n", msg.Subject))
+
+		if len(msg.Attachments) > 0 {
+			paths := make([]string, len(msg.Attachments))
+			for i, att := range msg.Attachments {
+				filename := AttachmentFilename(msg.ReceivedDateTime, att.Name)
+				paths[i] = attachDir + "/" + filename
+			}
+			sb.WriteString(fmt.Sprintf("Attachments: [%s]\n", strings.Join(paths, ", ")))
+		}
+
 		sb.WriteString("\n")
 		sb.WriteString(msg.CleanBody)
 		sb.WriteString("\n\n============================================================\n\n")

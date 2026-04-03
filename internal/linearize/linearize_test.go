@@ -53,7 +53,7 @@ func TestLinearize_ReplacesQuoteWithReference(t *testing.T) {
 		t.Fatalf("expected 2 messages, got %d", len(result.Messages))
 	}
 	body := result.Messages[1].CleanBody
-	if !strings.Contains(body, "[→ see msg #1 from Alice, 14 Jan]") {
+	if !strings.Contains(body, "[→ quoted text omitted. see message #1 from Alice, 14 Jan]") {
 		t.Errorf("expected reference to msg #1, got: %s", body)
 	}
 }
@@ -114,7 +114,7 @@ func TestLinearize_TrimsBlankLines(t *testing.T) {
 			ID: "2", ConversationID: "conv-1", Subject: "Re: Test",
 			From:             domain.EmailAddress{Name: "Bob", Address: "bob@example.com"},
 			ReceivedDateTime: t1.Add(time.Hour),
-			Body: domain.Body{ContentType: "text", Content: "Reply\n\n\n\n\n> Original text that is long enough for matching purposes in this test\n\n\n\nEnd"},
+			Body:             domain.Body{ContentType: "text", Content: "Reply\n\n\n\n\n> Original text that is long enough for matching purposes in this test\n\n\n\nEnd"},
 		},
 		Ordinal: 2,
 	}

@@ -10,8 +10,9 @@ import (
 var (
 	// "On Jan 14, 2025, Alice wrote:" or similar
 	gmailHeaderRe = regexp.MustCompile(`(?m)^On .+wrote:\s*$`)
-	// "From: ... Sent: ... Subject: ..." (Outlook style)
-	outlookHeaderRe = regexp.MustCompile(`(?m)^From:\s.+\nSent:\s.+\n(?:To:\s.+\n)?Subject:\s.+`)
+	// "From: ... Sent:/Date: ... Subject: ..." (Outlook style, both classic and web variants)
+	// Handles optional To:, Cc:, Bcc:, When:, Where: lines between From:/date and Subject:.
+	outlookHeaderRe = regexp.MustCompile(`(?m)^From:\s.+\n(?:Sent|Date):\s.+\n(?:(?:To|Cc|Bcc|When|Where):\s.+\n)*Subject:\s.+`)
 	// Separator lines: "-----Original Message-----" or similar
 	separatorRe = regexp.MustCompile(`(?m)^-{3,}\s*(?:Original Message|Forwarded message)\s*-{3,}`)
 )
